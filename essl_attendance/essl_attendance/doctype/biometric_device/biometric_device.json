@@ -22,13 +22,19 @@
             "fieldname": "communication_type",
             "fieldtype": "Select",
             "label": "Communication Type",
-            "options": "TCP/IP\nPush Data",
+            "options": "TCP/IP\nPush Data\nDummy Data (Testing)",
             "default": "TCP/IP"
         },
         {
             "fieldname": "ip_address",
             "fieldtype": "Data",
             "label": "IP Address"
+        },
+        {
+            "fieldname": "serial_number",
+            "fieldtype": "Data",
+            "label": "Serial Number",
+            "description": "Required for ADMS Push Data (e.g. the SN from the machine)"
         },
         {
             "fieldname": "port",

@@ -1,6 +1,7 @@
 import frappe
 from frappe.utils import now_datetime
 from essl_attendance.biometric_integration.clients.k90_client import K90Client
+from essl_attendance.biometric_integration.clients.dummy_client import DummyClient
 from essl_attendance.biometric_integration.services.mapping_service import MappingService
 from essl_attendance.biometric_integration.services.checkin_service import CheckinService
 
@@ -20,13 +21,15 @@ def sync_device(device_name):
     log.insert(ignore_permissions=True)
     frappe.db.commit()
     
-    if device.communication_type != "TCP/IP":
+    if device.communication_type == "Dummy Data (Testing)":
+        client = DummyClient(ip_address="127.0.0.1", port=4370)
+    elif device.communication_type == "TCP/IP":
+        client = K90Client(ip_address=device.ip_address, port=device.port, password=device.connection_password)
+    else:
         log.status = "Failed"
-        log.error_message = "Only TCP/IP Polling is currently implemented."
+        log.error_message = "Unsupported communication type."
         log.save()
         return
-
-    client = K90Client(ip_address=device.ip_address, port=device.port, password=device.connection_password)
     
     if not client.connect():
         log.status = "Failed"
