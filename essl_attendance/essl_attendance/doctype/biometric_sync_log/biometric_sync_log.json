@@ -1,0 +1,60 @@
+{
+    "doctype": "DocType",
+    "name": "Biometric Sync Log",
+    "module": "ESSL Attendance",
+    "custom": 1,
+    "fields": [
+        {
+            "fieldname": "device",
+            "fieldtype": "Link",
+            "label": "Device",
+            "options": "Biometric Device"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "Started\nSuccess\nPartial Success\nFailed"
+        },
+        {
+            "fieldname": "start_time",
+            "fieldtype": "Datetime",
+            "label": "Start Time"
+        },
+        {
+            "fieldname": "end_time",
+            "fieldtype": "Datetime",
+            "label": "End Time"
+        },
+        {
+            "fieldname": "fetched_count",
+            "fieldtype": "Int",
+            "label": "Fetched Count"
+        },
+        {
+            "fieldname": "created_count",
+            "fieldtype": "Int",
+            "label": "Created Count"
+        },
+        {
+            "fieldname": "duplicate_count",
+            "fieldtype": "Int",
+            "label": "Duplicate Count"
+        },
+        {
+            "fieldname": "unmapped_count",
+            "fieldtype": "Int",
+            "label": "Unmapped Count"
+        },
+        {
+            "fieldname": "error_count",
+            "fieldtype": "Int",
+            "label": "Error Count"
+        },
+        {
+            "fieldname": "error_message",
+            "fieldtype": "Small Text",
+            "label": "Error Message"
+        }
+    ]
+}

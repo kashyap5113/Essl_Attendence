@@ -1,0 +1,88 @@
+{
+    "doctype": "DocType",
+    "name": "Biometric Device",
+    "module": "ESSL Attendance",
+    "custom": 1,
+    "fields": [
+        {
+            "fieldname": "device_name",
+            "fieldtype": "Data",
+            "label": "Device Name",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company",
+            "options": "Company",
+            "reqd": 1
+        },
+        {
+            "fieldname": "communication_type",
+            "fieldtype": "Select",
+            "label": "Communication Type",
+            "options": "TCP/IP\nPush Data",
+            "default": "TCP/IP"
+        },
+        {
+            "fieldname": "ip_address",
+            "fieldtype": "Data",
+            "label": "IP Address"
+        },
+        {
+            "fieldname": "port",
+            "fieldtype": "Int",
+            "label": "Port",
+            "default": "4370"
+        },
+        {
+            "fieldname": "connection_password",
+            "fieldtype": "Password",
+            "label": "Connection Password"
+        },
+        {
+            "fieldname": "time_zone",
+            "fieldtype": "Select",
+            "label": "Time Zone",
+            "default": "Asia/Kolkata"
+        },
+        {
+            "fieldname": "enabled",
+            "fieldtype": "Check",
+            "label": "Enabled",
+            "default": "1"
+        },
+        {
+            "fieldname": "auto_sync",
+            "fieldtype": "Check",
+            "label": "Auto Sync",
+            "default": "1"
+        },
+        {
+            "fieldname": "sync_frequency",
+            "fieldtype": "Select",
+            "label": "Sync Frequency",
+            "options": "1 minute\n5 minutes\n10 minutes\n15 minutes\n30 minutes\nHourly",
+            "default": "5 minutes"
+        },
+        {
+            "fieldname": "last_sync",
+            "fieldtype": "Datetime",
+            "label": "Last Sync",
+            "read_only": 1
+        },
+        {
+            "fieldname": "last_successful_sync",
+            "fieldtype": "Datetime",
+            "label": "Last Successful Sync",
+            "read_only": 1
+        },
+        {
+            "fieldname": "clear_device_logs_after_sync",
+            "fieldtype": "Check",
+            "label": "Clear Device Logs After Sync",
+            "default": "0"
+        }
+    ]
+}

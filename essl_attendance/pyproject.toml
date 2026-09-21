@@ -1,0 +1,22 @@
+[project]
+name = "essl_attendance"
+authors = [
+    { name = "Developer", email = "developer@example.com"}
+]
+description = "eSSL K90 Pro Biometric Integration for Frappe HRMS"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    "frappe~=16.0.0",
+    "hrms~=16.0.0",
+    "pyzk"
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.app-dependencies]
+frappe = ">=16.0.0"
+hrms = ">=16.0.0"

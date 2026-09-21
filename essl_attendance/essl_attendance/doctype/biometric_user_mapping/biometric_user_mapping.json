@@ -1,0 +1,41 @@
+{
+    "doctype": "DocType",
+    "name": "Biometric User Mapping",
+    "module": "ESSL Attendance",
+    "custom": 1,
+    "fields": [
+        {
+            "fieldname": "biometric_device",
+            "fieldtype": "Link",
+            "label": "Biometric Device",
+            "options": "Biometric Device",
+            "reqd": 1
+        },
+        {
+            "fieldname": "biometric_user_id",
+            "fieldtype": "Data",
+            "label": "Biometric User ID",
+            "reqd": 1
+        },
+        {
+            "fieldname": "employee",
+            "fieldtype": "Link",
+            "label": "Employee",
+            "options": "Employee",
+            "reqd": 1
+        },
+        {
+            "fieldname": "employee_name",
+            "fieldtype": "Data",
+            "label": "Employee Name",
+            "read_only": 1,
+            "fetch_from": "employee.employee_name"
+        },
+        {
+            "fieldname": "active",
+            "fieldtype": "Check",
+            "label": "Active",
+            "default": "1"
+        }
+    ]
+}

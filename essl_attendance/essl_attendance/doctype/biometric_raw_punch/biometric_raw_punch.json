@@ -1,0 +1,49 @@
+{
+    "doctype": "DocType",
+    "name": "Biometric Raw Punch",
+    "module": "ESSL Attendance",
+    "custom": 1,
+    "fields": [
+        {
+            "fieldname": "device",
+            "fieldtype": "Link",
+            "label": "Device",
+            "options": "Biometric Device",
+            "reqd": 1
+        },
+        {
+            "fieldname": "device_user_id",
+            "fieldtype": "Data",
+            "label": "Device User ID",
+            "reqd": 1
+        },
+        {
+            "fieldname": "punch_time",
+            "fieldtype": "Datetime",
+            "label": "Punch Time",
+            "reqd": 1
+        },
+        {
+            "fieldname": "punch_type",
+            "fieldtype": "Data",
+            "label": "Punch Type"
+        },
+        {
+            "fieldname": "processed",
+            "fieldtype": "Check",
+            "label": "Processed",
+            "default": "0"
+        },
+        {
+            "fieldname": "employee_checkin",
+            "fieldtype": "Link",
+            "label": "Employee Checkin",
+            "options": "Employee Checkin"
+        },
+        {
+            "fieldname": "error_message",
+            "fieldtype": "Text",
+            "label": "Error Message"
+        }
+    ]
+}
