@@ -1,41 +1,110 @@
 {
+    "actions": [],
+    "autoname": "hash",
+    "creation": "2026-10-14 00:00:00.000000",
     "doctype": "DocType",
-    "name": "Biometric User Mapping",
-    "module": "ESSL Attendance",
-    "custom": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "biometric_device",
+        "biometric_user_id",
+        "biometric_user_name",
+        "column_break_main",
+        "employee",
+        "employee_name",
+        "company",
+        "active"
+    ],
     "fields": [
         {
             "fieldname": "biometric_device",
             "fieldtype": "Link",
             "label": "Biometric Device",
             "options": "Biometric Device",
-            "reqd": 1
+            "reqd": 1,
+            "in_list_view": 1
         },
         {
             "fieldname": "biometric_user_id",
             "fieldtype": "Data",
             "label": "Biometric User ID",
-            "reqd": 1
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "The user ID/PIN registered on the biometric device"
+        },
+        {
+            "fieldname": "biometric_user_name",
+            "fieldtype": "Data",
+            "label": "Name on Device",
+            "description": "The user name as stored on the biometric device (informational)"
+        },
+        {
+            "fieldname": "column_break_main",
+            "fieldtype": "Column Break"
         },
         {
             "fieldname": "employee",
             "fieldtype": "Link",
             "label": "Employee",
             "options": "Employee",
-            "reqd": 1
+            "reqd": 1,
+            "in_list_view": 1
         },
         {
             "fieldname": "employee_name",
             "fieldtype": "Data",
             "label": "Employee Name",
             "read_only": 1,
-            "fetch_from": "employee.employee_name"
+            "fetch_from": "employee.employee_name",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company",
+            "options": "Company",
+            "read_only": 1,
+            "fetch_from": "biometric_device.company"
         },
         {
             "fieldname": "active",
             "fieldtype": "Check",
             "label": "Active",
-            "default": "1"
+            "default": "1",
+            "in_list_view": 1
         }
-    ]
+    ],
+    "links": [],
+    "modified": "2026-10-14 06:00:00.000000",
+    "module": "ESSL Attendance",
+    "name": "Biometric User Mapping",
+    "naming_rule": "Random",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "HR Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "track_changes": 1
 }

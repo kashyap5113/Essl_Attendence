@@ -3,15 +3,17 @@ name = "essl_attendance"
 authors = [
     { name = "Developer", email = "developer@example.com"}
 ]
-description = "eSSL K90 Pro Biometric Integration for Frappe HRMS"
+description = "eSSL/ZKTeco Biometric Attendance Integration for ERPNext v16 / Frappe HRMS v16"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
     "frappe~=16.0.0",
-    "hrms~=16.0.0",
-    "pyzk"
+    "hrms~=16.0.0"
 ]
+
+[project.optional-dependencies]
+tcp = ["pyzk"]
 
 [build-system]
 requires = ["flit_core >=3.4,<4"]

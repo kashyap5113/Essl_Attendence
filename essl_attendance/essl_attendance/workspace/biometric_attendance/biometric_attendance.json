@@ -1,0 +1,117 @@
+{
+    "category": "Modules",
+    "charts": [],
+    "content": "[{\"id\":\"biometric-devices\",\"type\":\"shortcut\",\"shortcut_name\":\"Biometric Devices\"},{\"id\":\"user-mappings\",\"type\":\"shortcut\",\"shortcut_name\":\"User Mappings\"},{\"id\":\"raw-punches\",\"type\":\"shortcut\",\"shortcut_name\":\"Raw Punches\"},{\"id\":\"sync-logs\",\"type\":\"shortcut\",\"shortcut_name\":\"Sync Logs\"}]",
+    "creation": "2026-10-14 00:00:00.000000",
+    "doctype": "Workspace",
+    "hide_custom": 0,
+    "label": "Biometric Attendance",
+    "links": [
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Setup",
+            "link_count": 0,
+            "onboard": 0,
+            "type": "Card Break"
+        },
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Biometric Device",
+            "link_count": 0,
+            "link_to": "Biometric Device",
+            "link_type": "DocType",
+            "onboard": 1,
+            "type": "Link"
+        },
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Biometric User Mapping",
+            "link_count": 0,
+            "link_to": "Biometric User Mapping",
+            "link_type": "DocType",
+            "onboard": 1,
+            "type": "Link"
+        },
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Data",
+            "link_count": 0,
+            "onboard": 0,
+            "type": "Card Break"
+        },
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Biometric Raw Punch",
+            "link_count": 0,
+            "link_to": "Biometric Raw Punch",
+            "link_type": "DocType",
+            "onboard": 0,
+            "type": "Link"
+        },
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Biometric Sync Log",
+            "link_count": 0,
+            "link_to": "Biometric Sync Log",
+            "link_type": "DocType",
+            "onboard": 0,
+            "type": "Link"
+        }
+    ],
+    "module": "ESSL Attendance",
+    "modified": "2026-10-14 06:00:00.000000",
+    "name": "Biometric Attendance",
+    "owner": "Administrator",
+    "public": 1,
+    "roles": [
+        {"role": "System Manager"},
+        {"role": "HR Manager"}
+    ],
+    "sequence_id": 100,
+    "shortcuts": [
+        {
+            "color": "Blue",
+            "format": "{} Total",
+            "label": "Biometric Devices",
+            "link_to": "Biometric Device",
+            "stats_filter": "{}",
+            "type": "DocType"
+        },
+        {
+            "color": "Green",
+            "format": "{} Active",
+            "label": "User Mappings",
+            "link_to": "Biometric User Mapping",
+            "stats_filter": "{\"active\": 1}",
+            "type": "DocType"
+        },
+        {
+            "color": "Orange",
+            "format": "{} Pending",
+            "label": "Raw Punches",
+            "link_to": "Biometric Raw Punch",
+            "stats_filter": "{\"processing_status\": \"Pending\"}",
+            "type": "DocType"
+        },
+        {
+            "color": "Red",
+            "format": "{} Unmapped",
+            "label": "Unmapped Punches",
+            "link_to": "Biometric Raw Punch",
+            "stats_filter": "{\"processing_status\": \"Unmapped\"}",
+            "type": "DocType"
+        }
+    ]
+}

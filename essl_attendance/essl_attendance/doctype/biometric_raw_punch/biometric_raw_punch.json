@@ -1,27 +1,49 @@
 {
+    "actions": [],
+    "autoname": "hash",
+    "creation": "2026-10-14 00:00:00.000000",
     "doctype": "DocType",
-    "name": "Biometric Raw Punch",
-    "module": "ESSL Attendance",
-    "custom": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "device",
+        "device_user_id",
+        "punch_time",
+        "punch_type",
+        "column_break_main",
+        "source_type",
+        "received_at",
+        "idempotency_key",
+        "section_processing",
+        "processing_status",
+        "employee_checkin",
+        "column_break_proc",
+        "processed",
+        "error_message",
+        "section_raw",
+        "raw_payload"
+    ],
     "fields": [
         {
             "fieldname": "device",
             "fieldtype": "Link",
             "label": "Device",
             "options": "Biometric Device",
-            "reqd": 1
+            "reqd": 1,
+            "in_list_view": 1
         },
         {
             "fieldname": "device_user_id",
             "fieldtype": "Data",
             "label": "Device User ID",
-            "reqd": 1
+            "reqd": 1,
+            "in_list_view": 1
         },
         {
             "fieldname": "punch_time",
             "fieldtype": "Datetime",
             "label": "Punch Time",
-            "reqd": 1
+            "reqd": 1,
+            "in_list_view": 1
         },
         {
             "fieldname": "punch_type",
@@ -29,21 +51,110 @@
             "label": "Punch Type"
         },
         {
-            "fieldname": "processed",
-            "fieldtype": "Check",
-            "label": "Processed",
-            "default": "0"
+            "fieldname": "column_break_main",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "source_type",
+            "fieldtype": "Select",
+            "label": "Source",
+            "options": "\nPush\nPoll\nManual",
+            "default": "Push",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "received_at",
+            "fieldtype": "Datetime",
+            "label": "Received At",
+            "description": "When the server received this punch"
+        },
+        {
+            "fieldname": "idempotency_key",
+            "fieldtype": "Data",
+            "label": "Idempotency Key",
+            "unique": 1,
+            "hidden": 1,
+            "description": "Hash for duplicate detection"
+        },
+        {
+            "fieldname": "section_processing",
+            "fieldtype": "Section Break",
+            "label": "Processing"
+        },
+        {
+            "fieldname": "processing_status",
+            "fieldtype": "Select",
+            "label": "Processing Status",
+            "options": "Pending\nProcessed\nFailed\nUnmapped",
+            "default": "Pending",
+            "in_list_view": 1
         },
         {
             "fieldname": "employee_checkin",
             "fieldtype": "Link",
             "label": "Employee Checkin",
-            "options": "Employee Checkin"
+            "options": "Employee Checkin",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_proc",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "processed",
+            "fieldtype": "Check",
+            "label": "Processed (Legacy)",
+            "default": "0",
+            "hidden": 1,
+            "description": "Deprecated. Use processing_status instead."
         },
         {
             "fieldname": "error_message",
-            "fieldtype": "Text",
-            "label": "Error Message"
+            "fieldtype": "Small Text",
+            "label": "Error / Info"
+        },
+        {
+            "fieldname": "section_raw",
+            "fieldtype": "Section Break",
+            "label": "Raw Data",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "raw_payload",
+            "fieldtype": "Small Text",
+            "label": "Raw Payload",
+            "read_only": 1,
+            "description": "Original data line from the device (for debugging)"
         }
-    ]
+    ],
+    "links": [],
+    "modified": "2026-10-14 06:00:00.000000",
+    "module": "ESSL Attendance",
+    "name": "Biometric Raw Punch",
+    "naming_rule": "Random",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "HR Manager"
+        }
+    ],
+    "sort_field": "creation",
+    "sort_order": "DESC",
+    "track_changes": 0
 }

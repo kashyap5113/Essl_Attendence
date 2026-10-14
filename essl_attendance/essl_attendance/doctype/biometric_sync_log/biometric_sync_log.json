@@ -1,20 +1,54 @@
 {
+    "actions": [],
+    "autoname": "hash",
+    "creation": "2026-10-14 00:00:00.000000",
     "doctype": "DocType",
-    "name": "Biometric Sync Log",
-    "module": "ESSL Attendance",
-    "custom": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "device",
+        "sync_type",
+        "status",
+        "column_break_header",
+        "start_time",
+        "end_time",
+        "section_counts",
+        "fetched_count",
+        "created_count",
+        "column_break_counts",
+        "duplicate_count",
+        "unmapped_count",
+        "failed_count",
+        "section_errors",
+        "error_message",
+        "error_details"
+    ],
     "fields": [
         {
             "fieldname": "device",
             "fieldtype": "Link",
             "label": "Device",
-            "options": "Biometric Device"
+            "options": "Biometric Device",
+            "reqd": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "sync_type",
+            "fieldtype": "Select",
+            "label": "Sync Type",
+            "options": "Push\nPoll\nManual\nReprocess",
+            "default": "Push",
+            "in_list_view": 1
         },
         {
             "fieldname": "status",
             "fieldtype": "Select",
             "label": "Status",
-            "options": "Started\nSuccess\nPartial Success\nFailed"
+            "options": "Started\nSuccess\nPartial Success\nFailed",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "column_break_header",
+            "fieldtype": "Column Break"
         },
         {
             "fieldname": "start_time",
@@ -27,34 +61,79 @@
             "label": "End Time"
         },
         {
+            "fieldname": "section_counts",
+            "fieldtype": "Section Break",
+            "label": "Counts"
+        },
+        {
             "fieldname": "fetched_count",
             "fieldtype": "Int",
-            "label": "Fetched Count"
+            "label": "Records Received",
+            "in_list_view": 1
         },
         {
             "fieldname": "created_count",
             "fieldtype": "Int",
-            "label": "Created Count"
+            "label": "Checkins Created",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "column_break_counts",
+            "fieldtype": "Column Break"
         },
         {
             "fieldname": "duplicate_count",
             "fieldtype": "Int",
-            "label": "Duplicate Count"
+            "label": "Duplicates Skipped"
         },
         {
             "fieldname": "unmapped_count",
             "fieldtype": "Int",
-            "label": "Unmapped Count"
+            "label": "Unmapped Users"
         },
         {
-            "fieldname": "error_count",
+            "fieldname": "failed_count",
             "fieldtype": "Int",
-            "label": "Error Count"
+            "label": "Failed"
+        },
+        {
+            "fieldname": "section_errors",
+            "fieldtype": "Section Break",
+            "label": "Error Details",
+            "collapsible": 1
         },
         {
             "fieldname": "error_message",
             "fieldtype": "Small Text",
-            "label": "Error Message"
+            "label": "Error Summary"
+        },
+        {
+            "fieldname": "error_details",
+            "fieldtype": "Long Text",
+            "label": "Detailed Errors",
+            "description": "Per-record error details (sanitized)"
         }
-    ]
+    ],
+    "links": [],
+    "modified": "2026-10-14 06:00:00.000000",
+    "module": "ESSL Attendance",
+    "name": "Biometric Sync Log",
+    "naming_rule": "Random",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "read": 1,
+            "report": 1,
+            "export": 1,
+            "role": "System Manager"
+        },
+        {
+            "read": 1,
+            "report": 1,
+            "role": "HR Manager"
+        }
+    ],
+    "sort_field": "creation",
+    "sort_order": "DESC",
+    "track_changes": 0
 }

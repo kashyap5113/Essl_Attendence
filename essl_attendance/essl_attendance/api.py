@@ -1,79 +1,92 @@
+"""
+Admin API endpoints for eSSL Attendance.
+All methods here require authentication (no allow_guest).
+"""
+
 import frappe
-from frappe.utils import now_datetime
-from essl_attendance.biometric_integration.services.mapping_service import MappingService
-from essl_attendance.biometric_integration.services.checkin_service import CheckinService
-from werkzeug.wrappers import Response
 
-@frappe.whitelist(allow_guest=True)
-def receive_punch():
+
+@frappe.whitelist()
+def test_device_connection(device_name):
+    """Test TCP/IP connection to a biometric device.
+    Only works for TCP/IP (LAN Only) devices.
     """
-    Standard ADMS Push endpoint for ZKTeco/eSSL devices.
-    The device sends HTTP POST data to this URL.
-    Usually the serial number is in the query params (e.g., ?SN=12345)
-    and the payload contains the punch data.
-    """
-    sn = frappe.local.form_dict.get('SN')
-    if not sn:
-        return Response("ERROR: Missing SN", status=400, mimetype='text/plain')
+    frappe.has_permission("Biometric Device", "read", throw=True)
 
-    # Find device by SN
-    device_name = frappe.db.get_value("Biometric Device", {"serial_number": sn, "enabled": 1}, "name")
-    if not device_name:
-        return Response("ERROR: Unknown Device", status=403, mimetype='text/plain')
+    device = frappe.get_doc("Biometric Device", device_name)
+    if device.communication_type != "TCP/IP (LAN Only)":
+        return {"success": False, "error": "Test connection only works for TCP/IP devices"}
 
-    # The punch data is usually in the raw body
-    data = frappe.request.get_data(as_text=True)
-    if not data:
-        return Response("OK", status=200, mimetype='text/plain')
-        
-    lines = data.strip().split('\n')
-    
-    created = 0
-    for line in lines:
-        if not line.strip(): continue
-        # Example ADMS line: USERID\tTIMESTAMP\tPUNCHTYPE...
-        # "10025\t2026-09-21 10:00:00\t0\t1\t0\t0"
-        parts = line.strip().split('\t')
-        if len(parts) >= 2:
-            user_id = parts[0]
-            timestamp = parts[1]
-            punch_type = parts[2] if len(parts) > 2 else "0"
-            
-            # Idempotency check via Raw Punch insertion
-            try:
-                raw = frappe.new_doc("Biometric Raw Punch")
-                raw.device = device_name
-                raw.device_user_id = user_id
-                raw.punch_time = timestamp
-                raw.punch_type = punch_type
-                raw.insert(ignore_permissions=True)
-                frappe.db.commit()
-            except frappe.DuplicateEntryError:
-                continue # Skip processing if duplicate
-                
-            # Map Biometric User to Employee
-            employee = MappingService.get_employee_for_biometric_user(device_name, user_id)
-            if employee:
-                success = CheckinService.create_employee_checkin(
-                    employee=employee,
-                    punch_time=timestamp,
-                    device_id=device_name,
-                    punch_type=punch_type
-                )
-                if success:
-                    raw.processed = 1
-                    raw.save(ignore_permissions=True)
-                    frappe.db.commit()
-                    created += 1
-            else:
-                raw.error_message = "User not mapped"
-                raw.save(ignore_permissions=True)
-                frappe.db.commit()
+    try:
+        from essl_attendance.biometric_integration.clients.k90_client import K90Client
+        password = device.get_password("connection_password") if device.connection_password else None
+        client = K90Client(
+            ip_address=device.ip_address,
+            port=device.port or 4370,
+            password=password
+        )
+        if client.test_connection():
+            device.update_heartbeat()
+            frappe.db.commit()
+            return {"success": True}
+        else:
+            return {"success": False, "error": "Could not connect to device"}
+    except ImportError:
+        return {"success": False, "error": "pyzk package not installed. Run: pip install pyzk"}
+    except Exception as e:
+        return {"success": False, "error": str(e)[:200]}
 
-    # The machine expects a simple "OK" to confirm receipt
-    return Response("OK", status=200, mimetype='text/plain')
 
-# The machine may also ping getrequest to fetch commands (like setting time)
-@frappe.whitelist(allow_guest=True)
-def getrequest():
-    return Response("OK", status=200, mimetype='text/plain')
+@frappe.whitelist()
+def manual_sync(device_name):
+    """Manually trigger a sync for a polling-based device."""
+    frappe.has_permission("Biometric Device", "write", throw=True)
+
+    device = frappe.get_doc("Biometric Device", device_name)
+    if device.communication_type == "ADMS Push":
+        return {"status": "Failed", "error": "ADMS Push devices sync automatically. No manual sync needed."}
+
+    if not device.enabled:
+        return {"status": "Failed", "error": "Device is disabled"}
+
+    from essl_attendance.biometric_integration.services.sync_service import sync_device
+    result = sync_device(device_name, sync_type="Manual")
+    return result
+
+
+@frappe.whitelist()
+def reprocess_failed_punches(device_name):
+    """Reprocess punches that were unmapped or failed."""
+    frappe.has_permission("Biometric Device", "write", throw=True)
+
+    if not frappe.db.exists("Biometric Device", device_name):
+        frappe.throw(f"Device '{device_name}' not found")
+
+    from essl_attendance.biometric_integration.services.sync_service import reprocess_failed_punches as _reprocess
+    result = _reprocess(device_name)
+    return result
+
+
+@frappe.whitelist()
+def get_device_status(device_name):
+    """Get current status of a biometric device."""
+    frappe.has_permission("Biometric Device", "read", throw=True)
+
+    device = frappe.get_doc("Biometric Device", device_name)
+    return {
+        "connection_status": device.connection_status,
+        "last_heartbeat": str(device.last_heartbeat) if device.last_heartbeat else None,
+        "last_sync": str(device.last_sync) if device.last_sync else None,
+        "last_successful_sync": str(device.last_successful_sync) if device.last_successful_sync else None,
+        "last_error": device.last_error,
+        "communication_type": device.communication_type
+    }
+
+
+@frappe.whitelist()
+def get_unmapped_users(device_name):
+    """Get list of device user IDs that have no employee mapping."""
+    frappe.has_permission("Biometric User Mapping", "read", throw=True)
+
+    from essl_attendance.biometric_integration.services.mapping_service import MappingService
+    return MappingService.get_unmapped_user_ids(device_name)

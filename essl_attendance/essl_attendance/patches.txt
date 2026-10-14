@@ -1,1 +1,2 @@
 # Patch file for ESSL Attendance
+# Patches are run in order during bench migrate

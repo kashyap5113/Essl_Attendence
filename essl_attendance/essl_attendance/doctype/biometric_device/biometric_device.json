@@ -1,12 +1,47 @@
 {
+    "actions": [],
+    "autoname": "field:device_name",
+    "creation": "2026-10-14 00:00:00.000000",
     "doctype": "DocType",
-    "name": "Biometric Device",
-    "module": "ESSL Attendance",
-    "custom": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "device_name",
+        "company",
+        "serial_number",
+        "enabled",
+        "section_communication",
+        "communication_type",
+        "column_break_comm",
+        "device_timezone",
+        "section_push_settings",
+        "push_server_url",
+        "push_setup_html",
+        "section_tcp_settings",
+        "ip_address",
+        "port",
+        "connection_password",
+        "section_sync_settings",
+        "auto_sync",
+        "sync_frequency",
+        "column_break_sync",
+        "clear_device_logs_after_sync",
+        "section_status",
+        "connection_status",
+        "last_heartbeat",
+        "column_break_status",
+        "last_sync",
+        "last_successful_sync",
+        "section_errors",
+        "last_error",
+        "section_stamps",
+        "attlog_stamp",
+        "operlog_stamp"
+    ],
     "fields": [
         {
             "fieldname": "device_name",
             "fieldtype": "Data",
+            "in_list_view": 1,
             "label": "Device Name",
             "reqd": 1,
             "unique": 1
@@ -14,68 +49,157 @@
         {
             "fieldname": "company",
             "fieldtype": "Link",
+            "in_list_view": 1,
             "label": "Company",
             "options": "Company",
             "reqd": 1
         },
         {
-            "fieldname": "communication_type",
-            "fieldtype": "Select",
-            "label": "Communication Type",
-            "options": "TCP/IP\nPush Data\nDummy Data (Testing)",
-            "default": "TCP/IP"
-        },
-        {
-            "fieldname": "ip_address",
-            "fieldtype": "Data",
-            "label": "IP Address"
-        },
-        {
             "fieldname": "serial_number",
             "fieldtype": "Data",
+            "in_list_view": 1,
             "label": "Serial Number",
-            "description": "Required for ADMS Push Data (e.g. the SN from the machine)"
-        },
-        {
-            "fieldname": "port",
-            "fieldtype": "Int",
-            "label": "Port",
-            "default": "4370"
-        },
-        {
-            "fieldname": "connection_password",
-            "fieldtype": "Password",
-            "label": "Connection Password"
-        },
-        {
-            "fieldname": "time_zone",
-            "fieldtype": "Select",
-            "label": "Time Zone",
-            "default": "Asia/Kolkata"
+            "reqd": 1,
+            "unique": 1,
+            "description": "Hardware serial number printed on the device. Used for ADMS Push identification."
         },
         {
             "fieldname": "enabled",
             "fieldtype": "Check",
             "label": "Enabled",
-            "default": "1"
+            "default": "1",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "section_communication",
+            "fieldtype": "Section Break",
+            "label": "Communication Settings"
+        },
+        {
+            "fieldname": "communication_type",
+            "fieldtype": "Select",
+            "label": "Communication Type",
+            "options": "ADMS Push\nTCP/IP (LAN Only)\nDummy Data (Testing)",
+            "default": "ADMS Push",
+            "reqd": 1,
+            "description": "ADMS Push: Device sends data to server over HTTP (recommended).<br>TCP/IP: Server polls device directly (requires same LAN).<br>Dummy: Generates test data."
+        },
+        {
+            "fieldname": "column_break_comm",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "device_timezone",
+            "fieldtype": "Data",
+            "label": "Device Timezone",
+            "default": "Asia/Kolkata",
+            "description": "IANA timezone (e.g. Asia/Kolkata, America/New_York). Must match the timezone set on the physical device."
+        },
+        {
+            "fieldname": "section_push_settings",
+            "fieldtype": "Section Break",
+            "label": "ADMS Push Configuration",
+            "depends_on": "eval:doc.communication_type=='ADMS Push'"
+        },
+        {
+            "fieldname": "push_server_url",
+            "fieldtype": "Data",
+            "label": "Server URL (configure on device)",
+            "read_only": 1,
+            "description": "Set this as 'Server Address' on the biometric device under Menu → Comm. → Cloud Server Settings."
+        },
+        {
+            "fieldname": "push_setup_html",
+            "fieldtype": "HTML",
+            "label": " ",
+            "options": "<div class='alert alert-info' style='margin-top:10px;'><b>Device Setup:</b><ol style='margin-bottom:0;'><li>On device: <b>Menu → Comm. → Cloud Server Settings</b></li><li>Set <b>Server Address</b> to the URL above</li><li>Set <b>Server Port</b> to <code>443</code> (HTTPS) or <code>80</code> (HTTP)</li><li>Enable <b>Domain Name</b></li><li>Save and reboot the device</li></ol></div>"
+        },
+        {
+            "fieldname": "section_tcp_settings",
+            "fieldtype": "Section Break",
+            "label": "TCP/IP Settings",
+            "depends_on": "eval:doc.communication_type=='TCP/IP (LAN Only)'"
+        },
+        {
+            "fieldname": "ip_address",
+            "fieldtype": "Data",
+            "label": "Device IP Address",
+            "description": "IP address of the device on the local network",
+            "mandatory_depends_on": "eval:doc.communication_type=='TCP/IP (LAN Only)'"
+        },
+        {
+            "fieldname": "port",
+            "fieldtype": "Int",
+            "label": "Port",
+            "default": "4370",
+            "description": "Default ZKTeco TCP port is 4370"
+        },
+        {
+            "fieldname": "connection_password",
+            "fieldtype": "Password",
+            "label": "Connection Password (Comm Key)",
+            "description": "Communication key set on the device (default is 0 or blank)"
+        },
+        {
+            "fieldname": "section_sync_settings",
+            "fieldtype": "Section Break",
+            "label": "Polling Settings",
+            "depends_on": "eval:doc.communication_type=='TCP/IP (LAN Only)' || doc.communication_type=='Dummy Data (Testing)'"
         },
         {
             "fieldname": "auto_sync",
             "fieldtype": "Check",
-            "label": "Auto Sync",
-            "default": "1"
+            "label": "Auto Sync (Scheduled Polling)",
+            "default": "0",
+            "description": "Enable scheduled polling. Not needed for ADMS Push mode."
         },
         {
             "fieldname": "sync_frequency",
             "fieldtype": "Select",
             "label": "Sync Frequency",
-            "options": "1 minute\n5 minutes\n10 minutes\n15 minutes\n30 minutes\nHourly",
-            "default": "5 minutes"
+            "options": "5 minutes\n10 minutes\n15 minutes\n30 minutes\nHourly",
+            "default": "5 minutes",
+            "depends_on": "eval:doc.auto_sync==1"
+        },
+        {
+            "fieldname": "column_break_sync",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "clear_device_logs_after_sync",
+            "fieldtype": "Check",
+            "label": "Clear Device Logs After Sync",
+            "default": "0",
+            "description": "WARNING: Only enable after confirming data saves correctly."
+        },
+        {
+            "fieldname": "section_status",
+            "fieldtype": "Section Break",
+            "label": "Connection Status"
+        },
+        {
+            "fieldname": "connection_status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "\nOnline\nOffline\nNever Connected",
+            "read_only": 1,
+            "default": "Never Connected",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "last_heartbeat",
+            "fieldtype": "Datetime",
+            "label": "Last Heartbeat",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_status",
+            "fieldtype": "Column Break"
         },
         {
             "fieldname": "last_sync",
             "fieldtype": "Datetime",
-            "label": "Last Sync",
+            "label": "Last Sync Attempt",
             "read_only": 1
         },
         {
@@ -85,10 +209,89 @@
             "read_only": 1
         },
         {
-            "fieldname": "clear_device_logs_after_sync",
-            "fieldtype": "Check",
-            "label": "Clear Device Logs After Sync",
-            "default": "0"
+            "fieldname": "section_errors",
+            "fieldtype": "Section Break",
+            "label": "Errors",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "last_error",
+            "fieldtype": "Small Text",
+            "label": "Last Error",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_stamps",
+            "fieldtype": "Section Break",
+            "label": "ADMS Stamps (Internal)",
+            "collapsible": 1,
+            "depends_on": "eval:doc.communication_type=='ADMS Push'"
+        },
+        {
+            "fieldname": "attlog_stamp",
+            "fieldtype": "Data",
+            "label": "ATTLOG Stamp",
+            "read_only": 1,
+            "default": "0",
+            "hidden": 1
+        },
+        {
+            "fieldname": "operlog_stamp",
+            "fieldtype": "Data",
+            "label": "OPERLOG Stamp",
+            "read_only": 1,
+            "default": "0",
+            "hidden": 1
         }
-    ]
+    ],
+    "links": [
+        {
+            "group": "Data",
+            "link_doctype": "Biometric Raw Punch",
+            "link_fieldname": "device"
+        },
+        {
+            "group": "Data",
+            "link_doctype": "Biometric Sync Log",
+            "link_fieldname": "device"
+        },
+        {
+            "group": "Config",
+            "link_doctype": "Biometric User Mapping",
+            "link_fieldname": "biometric_device"
+        }
+    ],
+    "modified": "2026-10-14 06:00:00.000000",
+    "module": "ESSL Attendance",
+    "name": "Biometric Device",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "HR Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "track_changes": 1
 }
